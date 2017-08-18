@@ -6,28 +6,28 @@ from twilio.rest import Client
 from dotenv import load_dotenv, find_dotenv
 import os
 import re
+import io
 from datetime import datetime
 
 load_dotenv(find_dotenv())
+
+RIDE = os.environ['RIDE']
+PARK = os.environ['PARK']
+DATE = os.environ['DATE']
 
 print("""STARTING SEARCH
 Park: %s
 Ride: %s
 Date: %s
-Current time: %s""" % \
-      (os.environ['PARK'], \
-       os.environ['RIDE'], \
-       os.environ['DATE'], \
-       str(datetime.now())))
+Current time: %s""" % (PARK, RIDE, DATE, str(datetime.now())))
 
-r = requests.get("https://touringplans.com/%s/fastpass-availability/date/%s" % \
-                 (os.environ['PARK'], os.environ['DATE']))
+r = requests.get("https://touringplans.com/%s/fastpass-availability/date/%s" % (PARK, DATE))
 
 html_doc = r.text
 
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-for elem in soup(text=re.compile(os.environ['RIDE'])):
+for elem in soup(text=re.compile(RIDE)):
     el = elem
 
 for parent in el.parents:
@@ -35,13 +35,12 @@ for parent in el.parents:
         p = parent
         break
 
-fp = p.find_all("td")[1] \
-         .text.strip()
+fp = p.find_all("td")[1].text.strip()
 
 print(fp)
 
 try:
-    f = open("prev/%s.txt" % (os.environ['RIDE']), "r")
+    f = io.open("prev/%s.txt" % (RIDE), "r", encoding='utf8')
 except FileNotFoundError:
     prev = ""
 else:
@@ -56,7 +55,7 @@ if prev == fp:
 
 print("new!!!")
 
-f = open("prev/%s.txt" % (os.environ['RIDE']), "w")
+f = io.open("prev/%s.txt" % (RIDE), "w", encoding='utf8')
 f.write(fp)
 f.close()
 
@@ -66,8 +65,7 @@ message_body = """FP+ found!
 %s, %s
 
 %s
-https://disneyworld.disney.go.com/fastpass-plus/""" % \
-    (os.environ['RIDE'], os.environ['DATE'], fp)
+https://disneyworld.disney.go.com/fastpass-plus/""" % (RIDE, DATE, fp)
 
 client.messages.create(to=os.environ['TO_PHONE'], \
                        from_=os.environ['FROM_PHONE'], \
