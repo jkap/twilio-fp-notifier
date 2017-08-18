@@ -62,10 +62,10 @@ def send_message(avail):
     client = Client()
 
     message_body = """FP+ found!
-    %s, %s
+%s, %s
 
-    %s
-    https://disneyworld.disney.go.com/fastpass-plus/""" % (RIDE, DATE, avail)
+%s
+https://disneyworld.disney.go.com/fastpass-plus/""" % (RIDE, DATE, avail)
 
     client.messages.create(to=os.environ['TO_PHONE'],
                            from_=os.environ['FROM_PHONE'],
@@ -77,10 +77,10 @@ def send_message(avail):
 def main():
     """Find available FP times and notify user if they changed."""
     print("""STARTING SEARCH
-    Park: %s
-    Ride: %s
-    Date: %s
-    Current time: %s""" % (PARK, RIDE, DATE, str(datetime.now())))
+Park: %s
+Ride: %s
+Date: %s
+Current time: %s""" % (PARK, RIDE, DATE, str(datetime.now())))
 
     avail = fetch_avail()
 
