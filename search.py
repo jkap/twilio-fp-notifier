@@ -21,7 +21,9 @@ Ride: %s
 Date: %s
 Current time: %s""" % (PARK, RIDE, DATE, str(datetime.now())))
 
-r = requests.get("https://touringplans.com/%s/fastpass-availability/date/%s" % (PARK, DATE))
+r = requests.get(
+    "https://touringplans.com/%s/fastpass-availability/date/%s" %
+    (PARK, DATE))
 
 html_doc = r.text
 
@@ -67,12 +69,8 @@ message_body = """FP+ found!
 %s
 https://disneyworld.disney.go.com/fastpass-plus/""" % (RIDE, DATE, fp)
 
-client.messages.create(to=os.environ['TO_PHONE'], \
-                       from_=os.environ['FROM_PHONE'], \
+client.messages.create(to=os.environ['TO_PHONE'],
+                       from_=os.environ['FROM_PHONE'],
                        body=message_body)
 
 print("message sent!")
-
-
-
-
